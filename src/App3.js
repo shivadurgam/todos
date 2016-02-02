@@ -21,13 +21,30 @@ export class App extends Component {
   }
   editTodo(todo) {
     todo.edit = !todo.edit
-    this.setState({ edit: !this.state.edit })
+    this.setState({ todos: this.state.todos })
   }
-  updateTodo(todo){
-    todo.save({content: this.refs.editdo.value}).then(()=> {
-      this.setState({ todos: this.state.todos })
-    })
-    this.loadTodos()
+  doneTodo(todo) {
+    todo.edit = !todo.edit
+    this.setState({ todos: this.state.todos })
+  }
+  showContent(todo, index) {
+    if (todo.edit) {
+      return (
+        <div key={index+1}>
+              <input type="text" value={todo.attributes.content} ref='t'/>
+              <button onClick={this.doneTodo.bind(this,todo)} >Done</button>
+        </div>
+      )
+
+    } else {
+      return (
+        <div key={index+1}>
+              {index}. {todo.attributes.content}
+              <button onClick={this.deleteTodo.bind(this,todo)} >Delete</button>
+              <button onClick={this.editTodo.bind(this,todo)} >Edit</button>
+        </div>
+      )
+    }
   }
   addTodo(evt) {
     evt.stopPropagation()
@@ -36,25 +53,6 @@ export class App extends Component {
       this.loadTodos()
     })
     this.refs.todo.value = ''
-  }
-  showContent(todo,index) {
-    if (todo.edit) {
-      return (
-        <div key={index+1}>
-        <input type="text" ref="editdo" placeholder={todo.attributes.content} />
-        <button onClick={this.updateTodo.bind(this,todo)}>Update</button>
-        </div>
-      )
-    }
-    else {
-      return(
-        <div key={index+1}>
-            {index}. {todo.attributes.content}
-            <button onClick={this.editTodo.bind(this,todo)} >Edit</button>
-            <button onClick={this.deleteTodo.bind(this,todo)} >Delete</button>
-        </div>
-      )
-    }
   }
   render() {
     var index = 0;
@@ -65,7 +63,7 @@ export class App extends Component {
           index = index + 1
           return(
             <div>
-              {this.showContent(todo,index)}
+              {this.showContent(todo, index)}
             </div>
           )
         })}<br/>
